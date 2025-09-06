@@ -3,7 +3,7 @@ git branch -D gh-pages &&
 git branch gh-pages &&
 git checkout gh-pages &&
 npm install &&
-npm run build &&
+VITE_BASE_URL='/crop-chop/' npm run build &&
 rm -rf .vite node_modules public README.md AGENTS.md src package.json package-lock.json index.html eslint.config.js tsconfig.app.json tsconfig.node.json tsconfig.json tsconfig.app.json tsconfig.node.json tsconfig.json vite.config.ts build-gh-pages.sh &&
 mv dist/* ./ &&
 rm -rf dist &&
