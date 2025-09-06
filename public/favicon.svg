@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Terminal background -->
+  <rect width="32" height="32" fill="#000" rx="6"/>
+  
+  <!-- Simple crop frame -->
+  <rect x="8" y="10" width="16" height="12" fill="none" stroke="#00ff00" stroke-width="2" rx="2"/>
+  
+  <!-- Single diagonal cut line -->
+  <path d="M6 6 L26 26" stroke="#00ff00" stroke-width="2" stroke-linecap="round"/>
+</svg>
