@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "release": "bash build-gh-pages.sh",
     "lint": "eslint .",
     "preview": "vite preview"
   },
