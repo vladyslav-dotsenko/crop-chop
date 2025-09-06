@@ -12,7 +12,7 @@ This application was primarily developed using AI assistance through Cursor, dem
 
 ## Demo
 
-[Live Demo](https://cropchop-demo.vercel.app) *(placeholder - coming soon)*
+[Live Demo](https://vladyslav-dotsenko.github.io/crop-chop/)
 
 ## Highlights
 
