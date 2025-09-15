@@ -128,7 +128,12 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     const minScaleY = frameHeight / imageHeight
     const minScale = Math.max(minScaleX, minScaleY)
     
-    const delta = wheelDeltaRef.current > 0 ? -zoomStep : zoomStep
+    // Calculate zoom step that is capped at zoomStep maximum
+    // At zoom >= 1: use full zoomStep
+    // At zoom < 1: use smaller steps for fine control when zoomed out
+    const relativeZoomStep = Math.min(zoomStep, zoomStep * imageScale)
+    
+    const delta = wheelDeltaRef.current > 0 ? -relativeZoomStep : relativeZoomStep
     const newScale = Math.max(minScale, Math.min(maxScale, imageScale + delta))
     
     // Apply offset clamping after zooming to ensure frame doesn't overlap image borders
@@ -233,6 +238,25 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       <div className="crop-frame" />
       
       <div className="crop-overlay" />
+      
+      {/* Debug zoom display */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          background: 'rgba(0, 0, 0, 0.7)',
+          color: '#00ff00',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          zIndex: 1000,
+          pointerEvents: 'none'
+        }}
+      >
+        Zoom: {imageScale.toFixed(3)}
+      </div>
     </div>
   )
 }
