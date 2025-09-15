@@ -27,10 +27,16 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
   const dispatch = useDispatch()
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerLoaded, setContainerLoaded] = useState(false)
+  const [tempPanPosition, setTempPanPosition] = useState<{ x: number; y: number } | null>(null)
 
   useEffect(() => {
     setContainerLoaded(true)
   }, [containerRef.current])
+
+  // Clear temporary position when image changes
+  useEffect(() => {
+    setTempPanPosition(null)
+  }, [originalImage])
 
   const {
     images,
@@ -60,10 +66,12 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
     const deltaX = e.clientX - lastMousePosition.x
     const deltaY = e.clientY - lastMousePosition.y
     
+    const currentPosition = tempPanPosition || imagePosition
+
     // Calculate new position with delta
     const newPosition = {
-      x: imagePosition.x + deltaX,
-      y: imagePosition.y + deltaY
+      x: currentPosition.x + deltaX,
+      y: currentPosition.y + deltaY
     }
     
     // Apply panning constraints using the reusable clamping function
@@ -76,14 +84,18 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
       frameHeight,
     )
     
-    dispatch(setImagePosition(clampedPosition))
+    setTempPanPosition(clampedPosition)
     dispatch(setLastMousePosition({ x: e.clientX, y: e.clientY }))
   }, [dispatch, isDragging, lastMousePosition, originalImage, imagePosition, imageScale, frameHeight, frameWidth, naturalWidth, naturalHeight])
 
   const handleMouseUp = useCallback(() => {
+    if (tempPanPosition) {
+      dispatch(setImagePosition(tempPanPosition))
+      setTempPanPosition(null)
+    }
     dispatch(setIsDragging(false))
     dispatch(setLastMousePosition(null))
-  }, [dispatch])
+  }, [dispatch, tempPanPosition])
 
   // Debounced wheel handler to prevent lag from rapid wheel events
   const wheelDeltaRef = useRef(0)
@@ -170,11 +182,14 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
   // We need to account for the scaled image dimensions
   const containerDimensions = containerRef.current?.getBoundingClientRect() || { width: 0, height: 0 }
 
-  const transformX = imagePosition.x
+  // Use temporary position when dragging for immediate visual feedback
+  const currentPosition = tempPanPosition || imagePosition
+
+  const transformX = currentPosition.x
     - (naturalWidth * imageScale / 2)
     + (containerDimensions.width / 2)
 
-  const transformY = imagePosition.y
+  const transformY = currentPosition.y
     - (naturalHeight * imageScale / 2)
     + (containerDimensions.height / 2)
 
@@ -225,7 +240,7 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
             }}
           >
             <div>Zoom: {imageScale.toFixed(3)}</div>
-            <div>Offset: ({imagePosition.x.toFixed(1)}, {imagePosition.y.toFixed(1)})</div>
+            <div>Offset: ({currentPosition.x.toFixed(1)}, {currentPosition.y.toFixed(1)})</div>
           </div>
         </>
       )}
