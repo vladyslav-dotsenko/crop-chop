@@ -1,22 +1,31 @@
 import React, { useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { setOriginalImage } from '../../store/slices'
+import { addImage } from '../../store/slices'
 
 const ImageUploader: React.FC = () => {
   const dispatch = useDispatch()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const result = e.target?.result as string
-        // Extract filename without extension
-        const filename = file.name.replace(/\.[^/.]+$/, '')
-        dispatch(setOriginalImage({ imageUrl: result, filename }))
+    const files = event.target.files
+    if (!files) return
+
+    Array.from(files).forEach((file) => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const result = e.target?.result as string
+          // Extract filename without extension
+          const filename = file.name.replace(/\.[^/.]+$/, '')
+          dispatch(addImage({ imageUrl: result, filename }))
+        }
+        reader.readAsDataURL(file)
       }
-      reader.readAsDataURL(file)
+    })
+
+    // Reset the input so the same files can be selected again
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
     }
   }
 
@@ -30,6 +39,7 @@ const ImageUploader: React.FC = () => {
         ref={fileInputRef}
         type="file"
         accept="image/*"
+        multiple
         onChange={handleFileSelect}
         style={{ display: 'none' }}
       />
@@ -37,7 +47,7 @@ const ImageUploader: React.FC = () => {
         onClick={handleClick}
         className="upload-button"
       >
-        Choose Image
+        Choose Images
       </button>
     </div>
   )

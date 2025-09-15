@@ -1,17 +1,22 @@
 import React, { useRef, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from '../../store'
-import { setFilename } from '../../store/slices'
+import { updateImageFilename } from '../../store/slices'
 
 const PreviewPanel: React.FC = () => {
   const dispatch = useDispatch()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const {
-    originalImage,
-    imagePosition,
-    imageScale,
-    filename,
+    images,
+    selectedImageKey,
   } = useSelector((state: RootState) => state.imageCropper)
+
+  // Get the currently selected image data
+  const selectedImage = selectedImageKey ? images[selectedImageKey] : null
+  const originalImage = selectedImage?.originalImage || null
+  const imagePosition = selectedImage?.imagePosition || { x: 0, y: 0 }
+  const imageScale = selectedImage?.imageScale || 1
+  const filename = selectedImage?.filename || 'cropped-image'
 
   useEffect(() => {
     if (!originalImage || !canvasRef.current) return
@@ -124,7 +129,7 @@ const PreviewPanel: React.FC = () => {
           id="filename-input"
           type="text"
           value={filename}
-          onChange={(e) => dispatch(setFilename(e.target.value))}
+          onChange={(e) => selectedImageKey && dispatch(updateImageFilename({ imageKey: selectedImageKey, filename: e.target.value }))}
           className="filename-input"
           placeholder="Enter filename"
           disabled={!originalImage}

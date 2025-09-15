@@ -1,0 +1,236 @@
+import { useEffect, useRef, useCallback, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import type { RootState } from '../../store'
+import {
+  setIsDragging,
+  setLastMousePosition,
+  setImageScale,
+  setImagePosition,
+} from '../../store/slices'
+import { clampImagePosition } from '../../utils'
+
+export interface ImageCropperCoreProps {
+  originalImage: string
+  frameWidth?: number
+  frameHeight?: number
+  zoomStep?: number
+  maxScale?: number
+}
+
+const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
+  originalImage,
+  frameWidth = 300,
+  frameHeight = 200,
+  zoomStep = 0.05,
+  maxScale = 5
+}) => {
+  const dispatch = useDispatch()
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerLoaded, setContainerLoaded] = useState(false)
+
+  useEffect(() => {
+    setContainerLoaded(true)
+  }, [containerRef.current])
+
+  const {
+    images,
+    selectedImageKey,
+    isDragging,
+    lastMousePosition,
+  } = useSelector((state: RootState) => state.imageCropper)
+
+  // Get the currently selected image data
+  const selectedImage = selectedImageKey ? images[selectedImageKey] : null
+  const imagePosition = selectedImage?.imagePosition || { x: 0, y: 0 }
+  const imageScale = selectedImage?.imageScale || 1
+  const naturalWidth = selectedImage?.naturalWidth || 0
+  const naturalHeight = selectedImage?.naturalHeight || 0
+  
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (!originalImage) return
+    e.preventDefault()
+    dispatch(setIsDragging(true))
+    dispatch(setLastMousePosition({ x: e.clientX, y: e.clientY }))
+  }, [dispatch, originalImage])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging || !lastMousePosition || !originalImage) return
+    e.preventDefault()
+    
+    const deltaX = e.clientX - lastMousePosition.x
+    const deltaY = e.clientY - lastMousePosition.y
+    
+    // Calculate new position with delta
+    const newPosition = {
+      x: imagePosition.x + deltaX,
+      y: imagePosition.y + deltaY
+    }
+    
+    // Apply panning constraints using the reusable clamping function
+    const clampedPosition = clampImagePosition(
+      newPosition,
+      naturalWidth,
+      naturalHeight,
+      imageScale,
+      frameWidth,
+      frameHeight,
+    )
+    
+    dispatch(setImagePosition(clampedPosition))
+    dispatch(setLastMousePosition({ x: e.clientX, y: e.clientY }))
+  }, [dispatch, isDragging, lastMousePosition, originalImage, imagePosition, imageScale, frameHeight, frameWidth, naturalWidth, naturalHeight])
+
+  const handleMouseUp = useCallback(() => {
+    dispatch(setIsDragging(false))
+    dispatch(setLastMousePosition(null))
+  }, [dispatch])
+
+  // Debounced wheel handler to prevent lag from rapid wheel events
+  const wheelDeltaRef = useRef(0)
+  const lastWheelTimeRef = useRef(0)
+  const wheelTimeoutRef = useRef<number | null>(null)
+  
+  const processWheelDelta = useCallback(() => {
+    if (!originalImage || wheelDeltaRef.current === 0) return
+    
+    // Calculate minimum scale where image covers the frame (object-fit: cover behavior)
+    const minScaleX = frameWidth / naturalWidth
+    const minScaleY = frameHeight / naturalHeight
+    const minScale = Math.max(minScaleX, minScaleY)
+    
+    // Calculate zoom step that is capped at zoomStep maximum
+    // At zoom >= 1: use full zoomStep
+    // At zoom < 1: use smaller steps for fine control when zoomed out
+    const relativeZoomStep = Math.min(zoomStep, zoomStep * imageScale)
+    
+    const delta = wheelDeltaRef.current > 0 ? -relativeZoomStep : relativeZoomStep
+    const newScale = Math.max(minScale, Math.min(maxScale, imageScale + delta))
+    
+    // Apply offset clamping after zooming to ensure frame doesn't overlap image borders
+    if (newScale !== imageScale) {
+      // Clamp current position to new bounds using the reusable clamping function
+      const clampedPosition = clampImagePosition(
+        imagePosition,
+        naturalWidth,
+        naturalHeight,
+        newScale,
+        frameWidth,
+        frameHeight,
+      )
+      
+      // Update both scale and position
+      dispatch(setImageScale(newScale))
+      dispatch(setImagePosition(clampedPosition))
+    } else {
+      dispatch(setImageScale(newScale))
+    }
+    
+    // Reset accumulated delta
+    wheelDeltaRef.current = 0
+  }, [dispatch, imageScale, originalImage, frameWidth, frameHeight, zoomStep, maxScale, imagePosition, naturalWidth, naturalHeight])
+
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (!originalImage) return
+    
+    // Accumulate wheel delta
+    wheelDeltaRef.current += e.deltaY
+    
+    const now = Date.now()
+    const timeSinceLastUpdate = now - lastWheelTimeRef.current
+    const minUpdateInterval = 1000 / 30 // 30 updates per second = ~33ms between updates
+    
+    // Clear any existing timeout
+    if (wheelTimeoutRef.current) {
+      clearTimeout(wheelTimeoutRef.current)
+    }
+    
+    // If enough time has passed since last update, process immediately
+    if (timeSinceLastUpdate >= minUpdateInterval) {
+      lastWheelTimeRef.current = now
+      processWheelDelta()
+    } else {
+      // Otherwise, schedule an update after the minimum interval
+      wheelTimeoutRef.current = setTimeout(() => {
+        lastWheelTimeRef.current = Date.now()
+        processWheelDelta()
+      }, minUpdateInterval - timeSinceLastUpdate)
+    }
+  }, [originalImage, processWheelDelta])
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (wheelTimeoutRef.current) {
+        clearTimeout(wheelTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Calculate the transform with centering
+  // We need to account for the scaled image dimensions
+  const containerDimensions = containerRef.current?.getBoundingClientRect() || { width: 0, height: 0 }
+
+  const transformX = imagePosition.x
+    - (naturalWidth * imageScale / 2)
+    + (containerDimensions.width / 2)
+
+  const transformY = imagePosition.y
+    - (naturalHeight * imageScale / 2)
+    + (containerDimensions.height / 2)
+
+  return (
+    <div
+      ref={containerRef}
+      className="image-cropper"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onWheel={handleWheel}
+    >
+      {containerLoaded && (
+        <>
+          <div
+            className="image-container"
+            style={{
+              transform: `translate(${transformX}px, ${transformY}px) scale(${imageScale})`,
+            }}
+          >
+            <img
+              src={originalImage}
+              alt="Crop target"
+              draggable={false}
+            />
+          </div>
+          
+          <div className="crop-frame" />
+          
+          <div className="crop-overlay" />
+          
+          {/* Debug zoom and offset display */}
+          <div 
+            style={{
+              position: 'absolute',
+              top: '10px',
+              left: '10px',
+              background: 'rgba(0, 0, 0, 0.7)',
+              color: '#00ff00',
+              padding: '8px 12px',
+              borderRadius: '4px',
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              zIndex: 1000,
+              pointerEvents: 'none',
+              lineHeight: '1.4'
+            }}
+          >
+            <div>Zoom: {imageScale.toFixed(3)}</div>
+            <div>Offset: ({imagePosition.x.toFixed(1)}, {imagePosition.y.toFixed(1)})</div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+export default ImageCropperCore

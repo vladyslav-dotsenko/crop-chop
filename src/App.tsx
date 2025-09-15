@@ -3,6 +3,7 @@ import { store } from './store'
 import ImageUploader from './components/ImageUploader'
 import ImageCropper from './components/ImageCropper'
 import PreviewPanel from './components/PreviewPanel'
+import ImageSidebar from './components/ImageSidebar'
 import './App.css'
 
 function App() {
@@ -15,6 +16,10 @@ function App() {
         </header>
         
         <div className="app-content">
+          <div className="left-sidebar">
+            <ImageSidebar />
+          </div>
+          
           <div className="main-area">
             <div className="upload-section">
               <ImageUploader />
@@ -24,7 +29,7 @@ function App() {
             </div>
           </div>
           
-          <div className="sidebar">
+          <div className="right-sidebar">
             <PreviewPanel />
           </div>
         </div>
