@@ -1,0 +1,96 @@
+.frame-option {
+  background: #1a1a1a;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.frame-option:hover {
+  border-color: #00ff00;
+  background: #1f1f1f;
+  transform: translateY(-2px);
+}
+
+.frame-option.selected {
+  border-color: #00ff00;
+  background: #0f1f0f;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.frame-preview {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.frame-preview-box {
+  background: #000;
+  border: 2px solid #00ff00;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+.frame-preview-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #00ff00;
+  font-size: 10px;
+  text-align: center;
+}
+
+.frame-dimensions {
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.frame-ratio {
+  color: #888;
+  font-size: 8px;
+}
+
+.frame-info {
+  flex: 1;
+}
+
+.frame-title {
+  color: #fff;
+  font-size: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.frame-description {
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.frame-specs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.frame-size {
+  color: #00ff00;
+  font-weight: 500;
+}
+
+.frame-ratio-text {
+  color: #666;
+}

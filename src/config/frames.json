@@ -1,0 +1,39 @@
+{
+  "frames": [
+    {
+      "id": "instagram-square",
+      "title": "Instagram Square",
+      "width": 300,
+      "height": 200,
+      "description": "Perfect for Instagram posts"
+    },
+    {
+      "id": "instagram-story",
+      "title": "Instagram Story",
+      "width": 720,
+      "height": 720,
+      "description": "Vertical format for Instagram stories"
+    },
+    {
+      "id": "facebook-cover",
+      "title": "Facebook Cover",
+      "width": 1200,
+      "height": 630,
+      "description": "Facebook cover photo format"
+    },
+    {
+      "id": "twitter-header",
+      "title": "Twitter Header",
+      "width": 1500,
+      "height": 500,
+      "description": "Twitter profile header"
+    },
+    {
+      "id": "youtube-thumbnail",
+      "title": "YouTube Thumbnail",
+      "width": 1280,
+      "height": 720,
+      "description": "YouTube video thumbnail"
+    }
+  ]
+}

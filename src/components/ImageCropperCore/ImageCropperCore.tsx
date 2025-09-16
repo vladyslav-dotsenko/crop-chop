@@ -218,7 +218,13 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
             />
           </div>
           
-          <div className="crop-frame" />
+          <div
+            className="crop-frame"
+            style={{
+              width: frameWidth,
+              height: frameHeight,
+            }}
+          />
           
           <div className="crop-overlay" />
           

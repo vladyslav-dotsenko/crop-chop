@@ -23,6 +23,11 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   const [isLoading, setIsLoading] = useState(false)
   
   const { images, selectedImageKey } = useSelector((state: RootState) => state.imageCropper)
+  const { selectedFrame } = useSelector((state: RootState) => state.frameSelector)
+
+  // Use selected frame dimensions if available, otherwise use props
+  const effectiveFrameWidth = selectedFrame?.width || frameWidth
+  const effectiveFrameHeight = selectedFrame?.height || frameHeight
 
   // Get the currently selected image data
   const selectedImage = selectedImageKey ? images[selectedImageKey] : null
@@ -42,15 +47,15 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
         if (!selectedImageKey) return
         if (!!selectedImage?.isInitialized) return
     
-        const initialScale = Math.max(frameWidth / img.naturalWidth, frameHeight / img.naturalHeight)
+        const initialScale = Math.max(effectiveFrameWidth / img.naturalWidth, effectiveFrameHeight / img.naturalHeight)
     
         const initialPosition = clampImagePosition(
           { x: 0, y: 0 },
           img.naturalWidth,
           img.naturalHeight,
           initialScale,
-          frameWidth,
-          frameHeight,
+          effectiveFrameWidth,
+          effectiveFrameHeight,
         )
 
         dispatch(setImageScale(initialScale))
@@ -104,8 +109,8 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
       <ImageCropperCore
         key={selectedImageKey}
         originalImage={originalImage}
-        frameWidth={frameWidth}
-        frameHeight={frameHeight}
+        frameWidth={effectiveFrameWidth}
+        frameHeight={effectiveFrameHeight}
         zoomStep={zoomStep}
         maxScale={maxScale}
       />

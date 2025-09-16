@@ -1,5 +1,8 @@
+export { default as FramePreview } from './FramePreview'
+export { default as FrameSelector } from './FrameSelector'
 export { default as ImageUploader } from './ImageUploader'
 export { default as ImageCropper } from './ImageCropper'
 export { default as ImageCropperCore } from './ImageCropperCore'
+export { default as Navigation } from './Navigation'
 export { default as PreviewPanel } from './PreviewPanel'
 export { default as ImageSidebar } from './ImageSidebar'
