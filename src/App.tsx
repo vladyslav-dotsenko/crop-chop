@@ -6,7 +6,6 @@ import './App.css'
 
 function AppContent() {
   const { isFrameSelectorOpen, selectedFrame } = useSelector((state: RootState) => state.frameSelector)
-  const { selectedImageKey } = useSelector((state: RootState) => state.imageCropper)
 
   // Show frame selector if explicitly open or no frame is selected yet
   const showFrameSelector = isFrameSelectorOpen || !selectedFrame
