@@ -3,7 +3,12 @@ import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from '../../store'
 import { updateImageFilename } from '../../store/slices'
 
-const PreviewPanel: React.FC = () => {
+interface PreviewPanelProps {
+  frameWidth: number
+  frameHeight: number
+}
+
+const PreviewPanel: React.FC<PreviewPanelProps> = ({ frameWidth, frameHeight }) => {
   const dispatch = useDispatch()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const {
@@ -25,13 +30,9 @@ const PreviewPanel: React.FC = () => {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-
-
     const img = new Image()
     img.onload = () => {
       // Set canvas size to crop frame size (centered frame)
-      const frameWidth = 300
-      const frameHeight = 200
       canvas.width = frameWidth
       canvas.height = frameHeight
 
@@ -79,7 +80,7 @@ const PreviewPanel: React.FC = () => {
       )
     }
     img.src = originalImage
-  }, [originalImage, imagePosition, imageScale])
+  }, [originalImage, imagePosition, imageScale, frameWidth, frameHeight])
 
   const handleSave = useCallback(() => {
     if (!canvasRef.current) return
@@ -87,8 +88,8 @@ const PreviewPanel: React.FC = () => {
     const canvas = canvasRef.current
     const link = document.createElement('a')
     
-    // Add frame size to filename (300x200)
-    const frameSize = '300x200'
+    // Add frame size to filename using actual frame dimensions
+    const frameSize = `${frameWidth}x${frameHeight}`
     const baseFilename = filename.endsWith('.png') ? filename.replace('.png', '') : filename
     const filenameWithSize = `${baseFilename}_${frameSize}.png`
     
@@ -97,7 +98,7 @@ const PreviewPanel: React.FC = () => {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [filename])
+  }, [filename, frameWidth, frameHeight])
 
   if (!originalImage) {
     return (
@@ -108,6 +109,26 @@ const PreviewPanel: React.FC = () => {
     )
   }
 
+  // Calculate display size for canvas to fit in sidebar while maintaining aspect ratio
+  const getDisplaySize = () => {
+    const maxWidth = 250 // Approximate sidebar width minus padding
+    const maxHeight = 250 // Max height for preview
+    
+    const aspectRatio = frameWidth / frameHeight
+    
+    let displayWidth = maxWidth
+    let displayHeight = maxWidth / aspectRatio
+    
+    if (displayHeight > maxHeight) {
+      displayHeight = maxHeight
+      displayWidth = maxHeight * aspectRatio
+    }
+    
+    return { width: displayWidth, height: displayHeight }
+  }
+
+  const displaySize = getDisplaySize()
+
   return (
     <div className="preview-panel">
       <h3>Preview</h3>
@@ -115,10 +136,14 @@ const PreviewPanel: React.FC = () => {
         <canvas
           ref={canvasRef}
           className="preview-canvas"
+          style={{
+            width: `${displaySize.width}px`,
+            height: `${displaySize.height}px`
+          }}
         />
       </div>
       <div className="preview-info">
-        <p>Size: 300 × 200px</p>
+        <p>Size: {frameWidth} × {frameHeight}px</p>
         <p>Scale: {imageScale.toFixed(2)}x</p>
       </div>
       <div className="filename-input-container">

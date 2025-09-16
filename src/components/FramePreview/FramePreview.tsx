@@ -58,7 +58,10 @@ const FramePreview: React.FC<FramePreviewProps> = ({ frame, isSelected, onClick 
       </div>
       
       <div className="frame-info">
-        <h3 className="frame-title">{frame.title}</h3>
+        <h3 className="frame-title">
+          {frame.title}
+          {frame.isCustom && <span className="custom-badge">Custom</span>}
+        </h3>
         <p className="frame-description">{frame.description}</p>
         <div className="frame-specs">
           <span className="frame-size">{frame.width} × {frame.height}px</span>

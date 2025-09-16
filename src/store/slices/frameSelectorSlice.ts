@@ -4,13 +4,17 @@ import type { Frame } from '../../types'
 interface FrameSelectorState {
   selectedFrame: Frame | null
   availableFrames: Frame[]
+  customFrames: Frame[]
   isFrameSelectorOpen: boolean
+  isCustomFrameModalOpen: boolean
 }
 
 const initialState: FrameSelectorState = {
   selectedFrame: null,
   availableFrames: [],
-  isFrameSelectorOpen: false
+  customFrames: [],
+  isFrameSelectorOpen: false,
+  isCustomFrameModalOpen: false
 }
 
 const frameSelectorSlice = createSlice({
@@ -29,6 +33,15 @@ const frameSelectorSlice = createSlice({
     },
     closeFrameSelector: (state) => {
       state.isFrameSelectorOpen = false
+    },
+    addCustomFrame: (state, action: PayloadAction<Frame>) => {
+      state.customFrames.push(action.payload)
+    },
+    openCustomFrameModal: (state) => {
+      state.isCustomFrameModalOpen = true
+    },
+    closeCustomFrameModal: (state) => {
+      state.isCustomFrameModalOpen = false
     }
   }
 })
@@ -37,7 +50,10 @@ export const {
   setAvailableFrames,
   selectFrame,
   openFrameSelector,
-  closeFrameSelector
+  closeFrameSelector,
+  addCustomFrame,
+  openCustomFrameModal,
+  closeCustomFrameModal
 } = frameSelectorSlice.actions
 
 export default frameSelectorSlice.reducer

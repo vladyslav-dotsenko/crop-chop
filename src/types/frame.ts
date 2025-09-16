@@ -4,6 +4,7 @@ export interface Frame {
   width: number
   height: number
   description: string
+  isCustom?: boolean
 }
 
 export interface FrameConfig {

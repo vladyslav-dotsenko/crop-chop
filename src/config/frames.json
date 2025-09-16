@@ -1,25 +1,18 @@
 {
   "frames": [
     {
-      "id": "instagram-square",
-      "title": "Instagram Square",
-      "width": 300,
-      "height": 200,
-      "description": "Perfect for Instagram posts"
-    },
-    {
-      "id": "instagram-story",
-      "title": "Instagram Story",
+      "id": "l-square",
+      "title": "Large Square",
       "width": 720,
       "height": 720,
-      "description": "Vertical format for Instagram stories"
+      "description": "Large square card"
     },
     {
-      "id": "facebook-cover",
-      "title": "Facebook Cover",
-      "width": 1200,
-      "height": 630,
-      "description": "Facebook cover photo format"
+      "id": "m-square",
+      "title": "Mid Square",
+      "width": 400,
+      "height": 400,
+      "description": "Medium square card"
     },
     {
       "id": "twitter-header",

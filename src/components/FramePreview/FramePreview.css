@@ -94,3 +94,15 @@
 .frame-ratio-text {
   color: #666;
 }
+
+.custom-badge {
+  background: #00ff00;
+  color: #000;
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-left: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

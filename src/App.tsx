@@ -40,7 +40,10 @@ function AppContent() {
             </div>
             
             <div className="right-sidebar">
-              <PreviewPanel />
+              <PreviewPanel
+                frameWidth={selectedFrame?.width || 300}
+                frameHeight={selectedFrame?.height || 200}
+              />
             </div>
           </div>
         </>

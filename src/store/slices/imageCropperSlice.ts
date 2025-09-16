@@ -110,6 +110,12 @@ const imageCropperSlice = createSlice({
         state.images[imageKey].naturalWidth = naturalWidth
         state.images[imageKey].naturalHeight = naturalHeight
       }
+    },
+    resetAllImages: (state) => {
+      state.images = {}
+      state.selectedImageKey = null
+      state.isDragging = false
+      state.lastMousePosition = null
     }
   }
 })
@@ -124,6 +130,7 @@ export const {
   setLastMousePosition,
   updateImageFilename,
   markImageAsInitialized,
+  resetAllImages,
 } = imageCropperSlice.actions
 
 export default imageCropperSlice.reducer
