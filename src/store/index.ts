@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import imageCropperReducer from './slices/imageCropperSlice'
 import frameSelectorReducer from './slices/frameSelectorSlice'
+import framesComposerReducer from './slices/framesComposerSlice'
 
 export const store = configureStore({
   reducer: {
     imageCropper: imageCropperReducer,
-    frameSelector: frameSelectorReducer
+    frameSelector: frameSelectorReducer,
+    framesComposer: framesComposerReducer
   }
 })
 

@@ -1,0 +1,211 @@
+.preview-panel {
+  padding: 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+}
+
+.preview-panel h3 {
+  margin: 0 0 16px 0;
+  color: #00ff00;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.preview-panel.no-image {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.preview-panel.no-image p {
+  color: #888;
+  margin: 8px 0;
+}
+
+.preview-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.preview-canvas {
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #000;
+}
+
+.preview-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+
+.preview-info p {
+  color: #ccc;
+  font-size: 12px;
+}
+
+.size-info-row {
+  display: flex;
+  line-height: 1.2;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.size-label {
+  color: #888;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.size-value {
+  color: #00ff00;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.size-value::before {
+  content: '\00A0';
+}
+
+.export-options {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #2a2a2a;
+  border-radius: 4px;
+  border: 1px solid #444;
+}
+
+.export-options h4 {
+  margin: 0 0 12px 0;
+  color: #00ff00;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.export-size-selector,
+.export-format-selector {
+  margin-bottom: 12px;
+}
+
+.export-size-selector label,
+.export-format-selector label {
+  color: #ccc;
+  font-size: 12px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.export-size-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.export-size-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #00ff00;
+}
+
+.export-size-option label {
+  color: #ccc;
+  font-size: 12px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.export-select {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.export-select:focus {
+  outline: none;
+  border-color: #00ff00;
+  box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.1);
+}
+
+.export-select:hover {
+  border-color: #555;
+}
+
+.filename-input-container {
+  margin-bottom: 16px;
+}
+
+.filename-label {
+  display: block;
+  color: #ccc;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.filename-input {
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  padding: 6px 8px;
+  transition: border-color 0.2s ease;
+}
+
+.filename-input:focus {
+  outline: none;
+  border-color: #00ff00;
+  box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.1);
+}
+
+.filename-input:hover {
+  border-color: #555;
+}
+
+.save-button {
+  width: 100%;
+  background: #00ff00;
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.save-button:hover:not(:disabled) {
+  background: #00cc00;
+}
+
+.save-button:disabled {
+  background: #555;
+  color: #888;
+  cursor: not-allowed;
+}
+

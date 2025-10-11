@@ -2,15 +2,15 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../../store'
 import type { Frame } from '../../types'
-import { setAvailableFrames, selectFrame, openCustomFrameModal } from '../../store/slices'
+import { setAvailableFrames, selectFrame, openCustomFrameBuilder, closeCustomFrameBuilder } from '../../store/slices'
 import FramePreview from '../FramePreview'
-import CustomFrameModal from '../CustomFrameModal'
-import frameConfig from '../../config/frames.json'
+import CustomFrameBuilder from '../CustomFrameBuilder'
+import frameConfig from '../../config/frames'
 import './FrameSelector.css'
 
 const FrameSelector: React.FC = () => {
   const dispatch = useDispatch()
-  const { availableFrames, customFrames, selectedFrame, isCustomFrameModalOpen } = useSelector((state: RootState) => state.frameSelector)
+  const { availableFrames, customFrames, selectedFrame, isCustomFrameBuilderOpen } = useSelector((state: RootState) => state.frameSelector)
 
   // Load frame configurations on component mount
   useEffect(() => {
@@ -22,7 +22,7 @@ const FrameSelector: React.FC = () => {
   }
 
   const handleCreateCustomFrame = () => {
-    dispatch(openCustomFrameModal())
+    dispatch(openCustomFrameBuilder())
   }
 
   // Combine available frames and custom frames
@@ -63,21 +63,25 @@ const FrameSelector: React.FC = () => {
         </div>
       </div>
 
-      {selectedFrame && (
-        <div className="frame-selection-actions">
-          <button
-            className="start-cropping-button"
-            onClick={() => {
-              // Frame is already selected, this will close the frame selector
-              dispatch(selectFrame(selectedFrame))
-            }}
-          >
-            START CROPPING
-          </button>
+
+      {isCustomFrameBuilderOpen && (
+        <div className="custom-frame-builder-overlay">
+          <div className="custom-frame-builder-modal">
+            <div className="modal-header">
+              <h2>Create Custom Frame</h2>
+              <button 
+                className="modal-close"
+                onClick={() => dispatch(closeCustomFrameBuilder())}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <CustomFrameBuilder />
+            </div>
+          </div>
         </div>
       )}
-
-      <CustomFrameModal isOpen={isCustomFrameModalOpen} />
     </div>
   )
 }

@@ -7,6 +7,7 @@ interface FrameSelectorState {
   customFrames: Frame[]
   isFrameSelectorOpen: boolean
   isCustomFrameModalOpen: boolean
+  isCustomFrameBuilderOpen: boolean
 }
 
 const initialState: FrameSelectorState = {
@@ -14,7 +15,8 @@ const initialState: FrameSelectorState = {
   availableFrames: [],
   customFrames: [],
   isFrameSelectorOpen: false,
-  isCustomFrameModalOpen: false
+  isCustomFrameModalOpen: false,
+  isCustomFrameBuilderOpen: false
 }
 
 const frameSelectorSlice = createSlice({
@@ -42,6 +44,12 @@ const frameSelectorSlice = createSlice({
     },
     closeCustomFrameModal: (state) => {
       state.isCustomFrameModalOpen = false
+    },
+    openCustomFrameBuilder: (state) => {
+      state.isCustomFrameBuilderOpen = true
+    },
+    closeCustomFrameBuilder: (state) => {
+      state.isCustomFrameBuilderOpen = false
     }
   }
 })
@@ -53,7 +61,9 @@ export const {
   closeFrameSelector,
   addCustomFrame,
   openCustomFrameModal,
-  closeCustomFrameModal
+  closeCustomFrameModal,
+  openCustomFrameBuilder,
+  closeCustomFrameBuilder
 } = frameSelectorSlice.actions
 
 export default frameSelectorSlice.reducer

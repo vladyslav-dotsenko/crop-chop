@@ -8,6 +8,68 @@
   font-family: monospace;
 }
 
+.choose-images-section {
+  margin-bottom: 20px;
+}
+
+.choose-images-button {
+  width: 100%;
+  background: transparent;
+  border: 2px solid #333;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.choose-images-button:hover {
+  border-color: #00ff00;
+  background: rgba(0, 255, 0, 0.05);
+}
+
+.choose-images-icon {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: #888;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.choose-images-button:hover .choose-images-icon {
+  border-color: #00ff00;
+  color: #00ff00;
+}
+
+.choose-images-text {
+  flex: 1;
+  text-align: left;
+}
+
+.choose-images-title {
+  color: #00ff00;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.choose-images-subtitle {
+  color: #888;
+  font-size: 12px;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+}
+
 .image-sidebar h3 {
   margin: 0 0 16px 0;
   color: #00ff00;

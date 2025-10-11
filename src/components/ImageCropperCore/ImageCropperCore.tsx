@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from '../../store'
+import type { Frame } from '../../types'
 import {
   setIsDragging,
   setLastMousePosition,
@@ -13,6 +14,7 @@ export interface ImageCropperCoreProps {
   originalImage: string
   frameWidth?: number
   frameHeight?: number
+  selectedFrame?: Frame | null
   zoomStep?: number
   maxScale?: number
 }
@@ -21,6 +23,7 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
   originalImage,
   frameWidth = 300,
   frameHeight = 200,
+  selectedFrame = null,
   zoomStep = 0.05,
   maxScale = 5
 }) => {
@@ -28,6 +31,28 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerLoaded, setContainerLoaded] = useState(false)
   const [tempPanPosition, setTempPanPosition] = useState<{ x: number; y: number } | null>(null)
+
+  // Calculate crop frame dimensions based on frame type
+  const getCropFrameDimensions = useCallback(() => {
+    if (selectedFrame && selectedFrame.layers) {
+      // Find the art area layer
+      const artAreaLayer = selectedFrame.layers.find(layer => 
+        layer.type === 'image' && layer.properties.imageUrl === '{{croppedImage}}'
+      )
+      
+      if (artAreaLayer) {
+        return {
+          width: artAreaLayer.properties.width || frameWidth,
+          height: artAreaLayer.properties.height || frameHeight
+        }
+      }
+    }
+    
+    // Fallback to full frame dimensions
+    return { width: frameWidth, height: frameHeight }
+  }, [selectedFrame, frameWidth, frameHeight])
+
+  const cropDimensions = getCropFrameDimensions()
 
   useEffect(() => {
     setContainerLoaded(true)
@@ -80,13 +105,13 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
       naturalWidth,
       naturalHeight,
       imageScale,
-      frameWidth,
-      frameHeight,
+      cropDimensions.width,
+      cropDimensions.height,
     )
     
     setTempPanPosition(clampedPosition)
     dispatch(setLastMousePosition({ x: e.clientX, y: e.clientY }))
-  }, [dispatch, isDragging, lastMousePosition, originalImage, imagePosition, imageScale, frameHeight, frameWidth, naturalWidth, naturalHeight])
+  }, [dispatch, isDragging, lastMousePosition, originalImage, imagePosition, imageScale, cropDimensions, naturalWidth, naturalHeight])
 
   const handleMouseUp = useCallback(() => {
     if (tempPanPosition) {
@@ -126,8 +151,8 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
         naturalWidth,
         naturalHeight,
         newScale,
-        frameWidth,
-        frameHeight,
+        cropDimensions.width,
+        cropDimensions.height,
       )
       
       // Update both scale and position
@@ -221,8 +246,8 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
           <div
             className="crop-frame"
             style={{
-              width: frameWidth,
-              height: frameHeight,
+              width: cropDimensions.width,
+              height: cropDimensions.height,
             }}
           />
           

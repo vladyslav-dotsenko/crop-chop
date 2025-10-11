@@ -28,6 +28,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
 }
 
 .frame-preview-box {
@@ -40,6 +41,14 @@
   position: relative;
   min-width: 60px;
   min-height: 60px;
+}
+
+.cropped-area-overlay {
+  position: absolute;
+  background: rgba(0, 255, 0, 0.2);
+  border: 1px solid #00ff00;
+  border-radius: 2px;
+  pointer-events: none;
 }
 
 .frame-preview-content {
@@ -62,7 +71,7 @@
 }
 
 .frame-info {
-  flex: 1;
+  width: 100%;
 }
 
 .frame-title {
@@ -81,9 +90,21 @@
 
 .frame-specs {
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.size-info {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 11px;
+}
+
+.cropped-size-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .frame-size {
@@ -93,6 +114,17 @@
 
 .frame-ratio-text {
   color: #666;
+}
+
+.cropped-size {
+  color: #00ff00;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.cropped-ratio-text {
+  color: #666;
+  opacity: 0.8;
 }
 
 .custom-badge {

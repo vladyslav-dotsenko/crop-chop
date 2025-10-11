@@ -1,1 +1,7 @@
 export { clampImagePosition } from './imageUtils'
+export * from './fontAwesomeIcons'
+export * from './fontLoader'
+export * from './iconRenderer'
+export * from './layerAlignment'
+export * from './textWrapper'
+export * from './colorResolver'

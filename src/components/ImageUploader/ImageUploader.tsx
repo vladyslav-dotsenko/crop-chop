@@ -47,7 +47,7 @@ const ImageUploader: React.FC = () => {
         onClick={handleClick}
         className="upload-button"
       >
-        Choose Images
+        Add Images
       </button>
     </div>
   )

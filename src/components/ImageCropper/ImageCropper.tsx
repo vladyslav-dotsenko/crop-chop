@@ -36,7 +36,13 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
   // Handle image loading and initialization
   React.useEffect(() => {
     if (originalImage && selectedImageKey) {
-      if (!!selectedImage?.isInitialized) return
+      // If image is already initialized in Redux, set local state accordingly
+      if (selectedImage?.isInitialized) {
+        setIsImageLoaded(true)
+        setIsLoading(false)
+        return
+      }
+      
       setIsLoading(true)
       setIsImageLoaded(false)
       
@@ -103,14 +109,15 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
     )
   }
 
-  // Show the cropper core when image is loaded
-  if (isImageLoaded) {
+  // Show the cropper core when image is loaded or already initialized
+  if (isImageLoaded || selectedImage?.isInitialized) {
     return (
       <ImageCropperCore
         key={selectedImageKey}
         originalImage={originalImage}
         frameWidth={effectiveFrameWidth}
         frameHeight={effectiveFrameHeight}
+        selectedFrame={selectedFrame}
         zoomStep={zoomStep}
         maxScale={maxScale}
       />

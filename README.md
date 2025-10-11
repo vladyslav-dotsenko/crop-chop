@@ -19,6 +19,7 @@ This application was primarily developed using AI assistance through Cursor, dem
 - **[`AGENTS.md`](./AGENTS.md)** - Following the [agents.md standard initiative](https://github.com/agent-protocol/agents.md) for AI agent collaboration
 - **[`favicon.svg`](./public/favicon.svg)** - AI generated svg file
 - **[Real-time Canvas Rendering](./src/components/PreviewPanel/PreviewPanel.tsx)** - Some comprehansive canvas-rendering code AI helped me with (I would spend hours on this one myself)
+- **[Frame Configuration Guide](./docs/frame-configuration.md)** - Comprehensive documentation for creating custom frame configurations
 
 ## Features
 
@@ -28,6 +29,9 @@ This application was primarily developed using AI assistance through Cursor, dem
 - **Zoom & Pan**: Smooth zooming (mouse wheel) and panning (drag) with intelligent boundary constraints
 - **Live Preview**: Real-time preview of the cropped result as you adjust the crop area
 - **Custom Filename**: Editable filename with automatic size suffix (e.g., `image_300x200.png`)
+- **Frame Templates**: Pre-built frame configurations (MTG cards, social media formats, etc.)
+- **Custom Frames**: Create and configure custom frame templates with parameters
+- **Export Options**: Export full frames or cropped images only
 
 ### Technical Features
 - **Redux State Management**: Centralized state using Redux Toolkit with slice pattern
@@ -38,9 +42,11 @@ This application was primarily developed using AI assistance through Cursor, dem
 - **Debounced Interactions**: Optimized wheel events for smooth performance
 
 ### Output
-- **PNG Export**: High-quality PNG output with configurable dimensions (300×200px)
+- **PNG/WebP Export**: High-quality image output in multiple formats
+- **Multiple Sizes**: Export in original, large, and thumbnail sizes
 - **Automatic Naming**: Smart filename generation with size information
 - **One-Click Download**: Instant download of cropped images
+- **Frame Export**: Export complete framed compositions or cropped images only
 
 ## Tech Stack
 
@@ -58,3 +64,7 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) to view the application.
+
+## Documentation
+
+- **[Frame Configuration Guide](./docs/frame-configuration.md)** - Learn how to create custom frame templates with parameters, layers, and export options

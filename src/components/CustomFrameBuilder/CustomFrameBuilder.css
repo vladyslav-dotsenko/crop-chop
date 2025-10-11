@@ -1,0 +1,161 @@
+.custom-frame-builder {
+  padding: 16px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.custom-frame-builder h3 {
+  margin: 0 0 20px 0;
+  color: #00ff00;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.builder-section {
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-header h4 {
+  margin: 0;
+  color: #ccc;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.template-btn {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 4px;
+  color: #00ff00;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.template-btn:hover {
+  background: #444;
+  border-color: #00ff00;
+}
+
+.json-textarea {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  padding: 12px;
+  resize: vertical;
+  min-height: 200px;
+  transition: border-color 0.2s ease;
+}
+
+.json-textarea:focus {
+  outline: none;
+  border-color: #00ff00;
+  box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.1);
+}
+
+.json-textarea::placeholder {
+  color: #666;
+}
+
+.error-message {
+  background: #2a1a1a;
+  border: 1px solid #ff4444;
+  border-radius: 4px;
+  color: #ff6666;
+  font-size: 12px;
+  padding: 8px 12px;
+  margin-top: 8px;
+}
+
+.frame-preview {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preview-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.preview-info p {
+  margin: 4px 0;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.preview-info strong {
+  color: #fff;
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+  border-top: 1px solid #444;
+}
+
+.create-frame-btn {
+  background: #00ff00;
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  min-width: 120px;
+}
+
+.create-frame-btn:hover {
+  background: #00cc00;
+}
+
+.schema-info {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 16px;
+}
+
+.schema-info p {
+  margin: 0 0 8px 0;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.schema-info ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.schema-info li {
+  margin: 4px 0;
+}
+
+.schema-info strong {
+  color: #00ff00;
+}
+
