@@ -15,21 +15,6 @@ const FramePreview: React.FC<FramePreviewProps> = ({ frame, isSelected, onClick 
     return `${width / divisor}:${height / divisor}`
   }
 
-  const getFramePreviewSize = (width: number, height: number, maxSize: number = 120): { width: number; height: number } => {
-    const aspectRatio = width / height
-    if (width > height) {
-      return {
-        width: maxSize,
-        height: maxSize / aspectRatio
-      }
-    } else {
-      return {
-        width: maxSize * aspectRatio,
-        height: maxSize
-      }
-    }
-  }
-
   // Get cropped image dimensions and position from art area layer
   const getCroppedImageDimensions = () => {
     if (frame.layers) {
@@ -51,69 +36,97 @@ const FramePreview: React.FC<FramePreviewProps> = ({ frame, isSelected, onClick 
     return { width: frame.width, height: frame.height, x: 0, y: 0 }
   }
 
-  const previewSize = getFramePreviewSize(frame.width, frame.height)
-  const aspectRatio = getAspectRatio(frame.width, frame.height)
-  const croppedDimensions = getCroppedImageDimensions()
-  const croppedAspectRatio = getAspectRatio(croppedDimensions.width, croppedDimensions.height)
-  console.log({ croppedDimensions, frame })
+  const cropDimensions = getCroppedImageDimensions()
+  const cropRatio = getAspectRatio(cropDimensions.width, cropDimensions.height)
+  
+  const hasCropArea = cropDimensions.width !== frame.width || 
+                       cropDimensions.height !== frame.height || 
+                       cropDimensions.x !== 0 || 
+                       cropDimensions.y !== 0
+
+  // Calculate schematic size to fit in container
+  const getSchematicSize = () => {
+    const maxWidth = 80
+    const maxHeight = 64
+    const aspectRatio = frame.width / frame.height
+    
+    if (aspectRatio > 1) {
+      // Wider than tall
+      const width = maxWidth
+      const height = Math.min(maxHeight, width / aspectRatio)
+      return { width, height }
+    } else {
+      // Taller than wide
+      const height = maxHeight
+      const width = Math.min(maxWidth, height * aspectRatio)
+      return { width, height }
+    }
+  }
+
+  const schematic = getSchematicSize()
+
   return (
     <div
-      className={`frame-option ${isSelected ? 'selected' : ''}`}
+      className={`frame-row ${isSelected ? 'selected' : ''}`}
       onClick={onClick}
     >
-      <div className="frame-preview">
+      {/* Visual Preview Section */}
+      <div className="row-preview">
         <div
-          className="frame-preview-box"
+          className="preview-schematic"
           style={{
-            width: previewSize.width,
-            height: previewSize.height
+            width: schematic.width,
+            height: schematic.height
           }}
         >
-          {/* Cropped area overlay */}
-          {croppedDimensions.width !== frame.width || croppedDimensions.height !== frame.height ? (
+          {hasCropArea && (
             <div
-              className="cropped-area-overlay"
+              className="preview-crop"
               style={{
-                width: `${(croppedDimensions.width / frame.width) * 100}%`,
-                height: `${(croppedDimensions.height / frame.height) * 100}%`,
-                left: `${(croppedDimensions.x / frame.width) * 100}%`,
-                top: `${(croppedDimensions.y / frame.height) * 100}%`
+                width: `${(cropDimensions.width / frame.width) * 100}%`,
+                height: `${(cropDimensions.height / frame.height) * 100}%`,
+                left: `${(cropDimensions.x / frame.width) * 100}%`,
+                top: `${(cropDimensions.y / frame.height) * 100}%`
               }}
             />
-          ) : null}
-          
-          <div className="frame-preview-content">
-            <span className="frame-dimensions">
-              {croppedDimensions.width} × {croppedDimensions.height}
-            </span>
-            <span className="frame-ratio">
-              {croppedAspectRatio}
-            </span>
-          </div>
+          )}
         </div>
       </div>
-      
-      <div className="frame-info">
-        <h3 className="frame-title">
-          {frame.title}
-          {frame.isCustom && <span className="custom-badge">Custom</span>}
-        </h3>
-        <p className="frame-description">{frame.description}</p>
-        <div className="frame-specs">
-          <div className="size-info">
-            <span className="frame-size">Art Area: {croppedDimensions.width} × {croppedDimensions.height}px</span>
-            <span className="frame-ratio-text">({croppedAspectRatio})</span>
+
+      {/* Info Section */}
+      <div className="row-info">
+        <div className="info-header">
+          <span className="info-title">{frame.title}</span>
+          <div className="info-badges">
+            {frame.type === 'fancy' && <span className="badge fancy">layers</span>}
+            {frame.isCustom && <span className="badge custom">custom</span>}
           </div>
-          {croppedDimensions.width !== frame.width || croppedDimensions.height !== frame.height || croppedDimensions.x !== 0 || croppedDimensions.y !== 0 ? (
-            <div className="cropped-size-info">
-              <span className="cropped-size">Frame: {frame.width} × {frame.height}px</span>
-              <span className="cropped-ratio-text">({aspectRatio})</span>
+        </div>
+
+        <div className="info-body">
+          <div className="info-specs">
+            <div className="spec-item primary">
+              <span className="spec-label">crop:</span>
+              <span className="spec-value">{cropDimensions.width}×{cropDimensions.height}</span>
+              <span className="spec-ratio">({cropRatio})</span>
             </div>
-          ) : (
-            <div className="cropped-size-info">
-              <span className="cropped-size">Full frame</span>
-            </div>
-          )}
+            
+            {hasCropArea && (
+              <div className="spec-item secondary">
+                <span className="spec-label">frame:</span>
+                <span className="spec-value">{frame.width}×{frame.height}</span>
+              </div>
+            )}
+
+            {frame.parameters && frame.parameters.length > 0 && (
+              <div className="spec-item tertiary">
+                <span className="spec-icon">⚙</span>
+                <span className="spec-value">{frame.parameters.length} params</span>
+              </div>
+            )}
+          </div>
+
+          <div className="info-description">{frame.description}</div>
         </div>
       </div>
     </div>

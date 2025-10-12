@@ -50,6 +50,7 @@ export interface Frame {
   width: number
   height: number
   description: string
+  type?: 'simple' | 'fancy'
   isCustom?: boolean
   parameters?: FrameParameter[]
   layers?: FrameLayer[]

@@ -1,6 +1,7 @@
 export { default as FramePreview } from './FramePreview'
 export { default as FrameSelector } from './FrameSelector'
 export { default as CustomFrameModal } from './CustomFrameModal'
+export { default as SimpleCustomFrameModal } from './SimpleCustomFrameModal'
 export { default as ImageUploader } from './ImageUploader'
 export { default as ImageCropper } from './ImageCropper'
 export { default as ImageCropperCore } from './ImageCropperCore'
