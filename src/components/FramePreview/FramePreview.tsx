@@ -1,5 +1,6 @@
 import React from 'react'
 import type { Frame } from '../../types'
+import { getCropAreaDimensions } from '../../utils'
 import './FramePreview.css'
 
 interface FramePreviewProps {
@@ -15,28 +16,8 @@ const FramePreview: React.FC<FramePreviewProps> = ({ frame, isSelected, onClick 
     return `${width / divisor}:${height / divisor}`
   }
 
-  // Get cropped image dimensions and position from art area layer
-  const getCroppedImageDimensions = () => {
-    if (frame.layers) {
-      const artAreaLayer = frame.layers.find(layer => 
-        layer.type === 'image' && layer.properties.imageUrl === '{{croppedImage}}'
-      )
-      
-      if (artAreaLayer) {
-        return {
-          width: artAreaLayer.properties.width || frame.width,
-          height: artAreaLayer.properties.height || frame.height,
-          x: artAreaLayer.properties.x || 0,
-          y: artAreaLayer.properties.y || 0
-        }
-      }
-    }
-    
-    // Fallback to full frame dimensions
-    return { width: frame.width, height: frame.height, x: 0, y: 0 }
-  }
-
-  const cropDimensions = getCroppedImageDimensions()
+  // Get crop area dimensions using the new configuration approach
+  const cropDimensions = getCropAreaDimensions(frame, frame.width, frame.height)
   const cropRatio = getAspectRatio(cropDimensions.width, cropDimensions.height)
   
   const hasCropArea = cropDimensions.width !== frame.width || 

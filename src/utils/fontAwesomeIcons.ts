@@ -124,17 +124,4 @@ export const convertFAClassesToUnicode = (iconClasses: string): string => {
   return unicodeChars
 }
 
-/**
- * Alternative method: Get Font Awesome CSS classes for rendering
- * @param iconClasses - Space-separated FA icon classes
- * @returns Array of CSS class names
- */
-export const getFAClasses = (iconClasses: string): string[] => {
-  if (!iconClasses) return []
-  
-  return iconClasses.split(/\s+/).filter(Boolean).map(cls => {
-    // Ensure 'fa-' prefix is present
-    return cls.startsWith('fa-') ? cls : `fa-${cls}`
-  })
-}
 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from '../../store'
 import type { Frame } from '../../types'
 import { updateImageFilename, toggleExportSize, setExportFormat, setExportCroppedOnly } from '../../store/slices'
-import { convertFAClassesToUnicode, testFontAwesome, loadFontAwesomeForCanvas, tryAlternativeFontLoading, calculateAlignedPosition, getCanvasTextAlign, measureTextWidth, renderWrappedText, resolveBackgroundColor, createCanvasGradient } from '../../utils'
+import { convertFAClassesToUnicode, testFontAwesome, loadFontAwesomeForCanvas, tryAlternativeFontLoading, calculateAlignedPosition, getCanvasTextAlign, measureTextWidth, renderWrappedText, resolveBackgroundColor, createCanvasGradient, getCropAreaDimensions } from '../../utils'
 import './PreviewPanel.css'
 
 interface PreviewPanelProps {
@@ -33,29 +33,8 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ frameWidth, frameHeight }) 
   const imageScale = selectedImage?.imageScale || 1
   const filename = selectedImage?.filename || 'cropped-image'
 
-  // Calculate crop frame dimensions and position based on frame type (same logic as ImageCropperCore)
-  const getCropFrameDimensions = useCallback(() => {
-    if (selectedFrame && selectedFrame.layers) {
-      // Find the art area layer
-      const artAreaLayer = selectedFrame.layers.find(layer => 
-        layer.type === 'image' && layer.properties.imageUrl === '{{croppedImage}}'
-      )
-      
-      if (artAreaLayer) {
-        return {
-          width: artAreaLayer.properties.width || frameWidth,
-          height: artAreaLayer.properties.height || frameHeight,
-          x: artAreaLayer.properties.x || 0,
-          y: artAreaLayer.properties.y || 0
-        }
-      }
-    }
-    
-    // Fallback to full frame dimensions
-    return { width: frameWidth, height: frameHeight, x: 0, y: 0 }
-  }, [selectedFrame, frameWidth, frameHeight])
-
-  const cropDimensions = getCropFrameDimensions()
+  // Get crop area dimensions using the new configuration approach
+  const cropDimensions = getCropAreaDimensions(selectedFrame, frameWidth, frameHeight)
 
   // Load Font Awesome for canvas rendering on component mount
   useEffect(() => {

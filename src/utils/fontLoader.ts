@@ -1,26 +1,5 @@
 // Font loading utility to ensure Font Awesome is loaded before rendering
 
-export const loadFontForCanvas = async (fontFamily: string, fontWeight: string = '400'): Promise<boolean> => {
-  return new Promise((resolve) => {
-    if (!document.fonts) {
-      // Fallback for browsers without Font Loading API
-      console.warn('Font Loading API not supported, using fallback')
-      resolve(true)
-      return
-    }
-
-    // Load the specific font variant
-    const fontSpec = `${fontWeight} 16px "${fontFamily}"`
-    
-    document.fonts.load(fontSpec).then(() => {
-      console.log(`Font loaded: ${fontSpec}`)
-      resolve(true)
-    }).catch((error) => {
-      console.error(`Failed to load font: ${fontSpec}`, error)
-      resolve(false)
-    })
-  })
-}
 
 export const loadFontAwesomeForCanvas = async (): Promise<boolean> => {
   console.log('Loading Font Awesome for canvas...')
@@ -67,23 +46,6 @@ export const loadFontAwesomeForCanvas = async (): Promise<boolean> => {
   }
 }
 
-export const checkFontLoaded = (fontFamily: string): Promise<boolean> => {
-  return new Promise((resolve) => {
-    if (!document.fonts) {
-      resolve(true)
-      return
-    }
-
-    document.fonts.ready.then(() => {
-      const font = document.fonts.check(`16px "${fontFamily}"`)
-      resolve(font)
-    })
-  })
-}
-
-export const waitForFontAwesome = (): Promise<boolean> => {
-  return checkFontLoaded('Font Awesome 6 Free')
-}
 
 // Test function to verify Font Awesome is working
 export const testFontAwesome = async (): Promise<void> => {

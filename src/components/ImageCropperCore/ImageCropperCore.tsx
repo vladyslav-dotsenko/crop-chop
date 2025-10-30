@@ -8,7 +8,7 @@ import {
   setImageScale,
   setImagePosition,
 } from '../../store/slices'
-import { clampImagePosition } from '../../utils'
+import { clampImagePosition, getCropAreaDimensions, calculateMaxScale } from '../../utils'
 
 export interface ImageCropperCoreProps {
   originalImage: string
@@ -31,32 +31,53 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const [containerLoaded, setContainerLoaded] = useState(false)
   const [tempPanPosition, setTempPanPosition] = useState<{ x: number; y: number } | null>(null)
+  const [containerSize, setContainerSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 })
 
-  // Calculate crop frame dimensions based on frame type
-  const getCropFrameDimensions = useCallback(() => {
-    if (selectedFrame && selectedFrame.layers) {
-      // Find the art area layer
-      const artAreaLayer = selectedFrame.layers.find(layer => 
-        layer.type === 'image' && layer.properties.imageUrl === '{{croppedImage}}'
-      )
-      
-      if (artAreaLayer) {
-        return {
-          width: artAreaLayer.properties.width || frameWidth,
-          height: artAreaLayer.properties.height || frameHeight
-        }
+  // Get crop area dimensions using the new configuration approach
+  const cropDimensions = getCropAreaDimensions(selectedFrame, frameWidth, frameHeight)
+
+  // Calculate scale factor to fit frame within viewport with padding
+  const getViewportScale = useCallback(() => {
+    if (containerSize.width === 0 || containerSize.height === 0) return 1
+    
+    const padding = 80 // Padding around the frame
+    const availableWidth = containerSize.width - padding
+    const availableHeight = containerSize.height - padding
+    
+    const scaleX = availableWidth / frameWidth
+    const scaleY = availableHeight / frameHeight
+    
+    // Use the smaller scale to ensure frame fits in both dimensions
+    const scale = Math.min(scaleX, scaleY, 1) // Don't scale up beyond 1:1
+    
+    return scale
+  }, [containerSize, frameWidth, frameHeight])
+
+  const viewportScale = getViewportScale()
+
+  // Update container size on mount and resize
+  useEffect(() => {
+    if (!containerRef.current) return
+    
+    const updateSize = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        setContainerSize({ width: rect.width, height: rect.height })
       }
     }
     
-    // Fallback to full frame dimensions
-    return { width: frameWidth, height: frameHeight }
-  }, [selectedFrame, frameWidth, frameHeight])
-
-  const cropDimensions = getCropFrameDimensions()
-
-  useEffect(() => {
+    updateSize()
     setContainerLoaded(true)
-  }, [containerRef.current])
+    
+    // Use ResizeObserver for more accurate container size tracking
+    const resizeObserver = new ResizeObserver(updateSize)
+    resizeObserver.observe(containerRef.current)
+    
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [])
+
 
   // Clear temporary position when image changes
   useEffect(() => {
@@ -88,12 +109,12 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
     if (!isDragging || !lastMousePosition || !originalImage) return
     e.preventDefault()
     
-    const deltaX = e.clientX - lastMousePosition.x
-    const deltaY = e.clientY - lastMousePosition.y
+    const deltaX = (e.clientX - lastMousePosition.x) / viewportScale
+    const deltaY = (e.clientY - lastMousePosition.y) / viewportScale
     
     const currentPosition = tempPanPosition || imagePosition
 
-    // Calculate new position with delta
+    // Calculate new position with delta (adjusted for viewport scale)
     const newPosition = {
       x: currentPosition.x + deltaX,
       y: currentPosition.y + deltaY
@@ -111,7 +132,7 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
     
     setTempPanPosition(clampedPosition)
     dispatch(setLastMousePosition({ x: e.clientX, y: e.clientY }))
-  }, [dispatch, isDragging, lastMousePosition, originalImage, imagePosition, imageScale, cropDimensions, naturalWidth, naturalHeight])
+  }, [dispatch, isDragging, lastMousePosition, originalImage, imagePosition, imageScale, cropDimensions, naturalWidth, naturalHeight, viewportScale])
 
   const handleMouseUp = useCallback(() => {
     if (tempPanPosition) {
@@ -130,10 +151,13 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
   const processWheelDelta = useCallback(() => {
     if (!originalImage || wheelDeltaRef.current === 0) return
     
-    // Calculate minimum scale where image covers the frame (object-fit: cover behavior)
-    const minScaleX = frameWidth / naturalWidth
-    const minScaleY = frameHeight / naturalHeight
+    // Calculate minimum scale where image covers the crop area (object-fit: cover behavior)
+    const minScaleX = cropDimensions.width / naturalWidth
+    const minScaleY = cropDimensions.height / naturalHeight
     const minScale = Math.max(minScaleX, minScaleY)
+    
+    // Calculate dynamic max scale based on crop area dimensions
+    const dynamicMaxScale = calculateMaxScale(naturalWidth, naturalHeight, cropDimensions.width, cropDimensions.height)
     
     // Calculate zoom step that is capped at zoomStep maximum
     // At zoom >= 1: use full zoomStep
@@ -141,7 +165,7 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
     const relativeZoomStep = Math.min(zoomStep, zoomStep * imageScale)
     
     const delta = wheelDeltaRef.current > 0 ? -relativeZoomStep : relativeZoomStep
-    const newScale = Math.max(minScale, Math.min(maxScale, imageScale + delta))
+    const newScale = Math.max(minScale, Math.min(dynamicMaxScale, imageScale + delta))
     
     // Apply offset clamping after zooming to ensure frame doesn't overlap image borders
     if (newScale !== imageScale) {
@@ -164,7 +188,7 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
     
     // Reset accumulated delta
     wheelDeltaRef.current = 0
-  }, [dispatch, imageScale, originalImage, frameWidth, frameHeight, zoomStep, maxScale, imagePosition, naturalWidth, naturalHeight])
+  }, [dispatch, imageScale, originalImage, frameWidth, frameHeight, zoomStep, maxScale, imagePosition, naturalWidth, naturalHeight, cropDimensions])
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     if (!originalImage) return
@@ -203,20 +227,19 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
     }
   }, [])
 
-  // Calculate the transform with centering
-  // We need to account for the scaled image dimensions
-  const containerDimensions = containerRef.current?.getBoundingClientRect() || { width: 0, height: 0 }
-
+  // Calculate the transform with centering and viewport scaling
   // Use temporary position when dragging for immediate visual feedback
   const currentPosition = tempPanPosition || imagePosition
 
-  const transformX = currentPosition.x
-    - (naturalWidth * imageScale / 2)
-    + (containerDimensions.width / 2)
-
-  const transformY = currentPosition.y
-    - (naturalHeight * imageScale / 2)
-    + (containerDimensions.height / 2)
+  // The image position in logical (unscaled) coordinates
+  // Center the image at the center of the crop area
+  const logicalX = currentPosition.x - (naturalWidth * imageScale / 2) + (cropDimensions.width / 2)
+  const logicalY = currentPosition.y - (naturalHeight * imageScale / 2) + (cropDimensions.height / 2)
+  
+  // Scale the logical position and center it in the viewport
+  // The crop frame is centered at (containerSize.width/2, containerSize.height/2)
+  const transformX = logicalX * viewportScale + (containerSize.width / 2) - (cropDimensions.width * viewportScale / 2)
+  const transformY = logicalY * viewportScale + (containerSize.height / 2) - (cropDimensions.height * viewportScale / 2)
 
   return (
     <div
@@ -228,12 +251,12 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
       onMouseLeave={handleMouseUp}
       onWheel={handleWheel}
     >
-      {containerLoaded && (
+      {containerLoaded && containerSize.width > 0 && (
         <>
           <div
             className="image-container"
             style={{
-              transform: `translate(${transformX}px, ${transformY}px) scale(${imageScale})`,
+              transform: `translate(${transformX}px, ${transformY}px) scale(${imageScale * viewportScale})`,
             }}
           >
             <img
@@ -246,8 +269,8 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
           <div
             className="crop-frame"
             style={{
-              width: cropDimensions.width,
-              height: cropDimensions.height,
+              width: cropDimensions.width * viewportScale,
+              height: cropDimensions.height * viewportScale,
             }}
           />
           
@@ -272,6 +295,7 @@ const ImageCropperCore: React.FC<ImageCropperCoreProps> = ({
           >
             <div>Zoom: {imageScale.toFixed(3)}</div>
             <div>Offset: ({currentPosition.x.toFixed(1)}, {currentPosition.y.toFixed(1)})</div>
+            <div>Viewport: {viewportScale.toFixed(3)}</div>
           </div>
         </>
       )}

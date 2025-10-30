@@ -1,0 +1,190 @@
+.save-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.save-modal {
+  width: 900px;
+  max-width: 95vw;
+  max-height: 92vh;
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  color: #ddd;
+}
+
+.save-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #222;
+}
+
+.save-modal-header h3 {
+  margin: 0;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+  color: #00ff00;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #ffffff;
+}
+
+.save-modal-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  overflow: visible;
+}
+
+.save-left {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  min-width: 0;
+}
+
+.preview-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  border: 1px dashed #333;
+  border-radius: 6px;
+  padding: 12px;
+  overflow: auto;
+  width: 100%;
+}
+
+.preview-canvas-hidden {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 0;
+  height: 0;
+}
+
+.preview-image {
+  display: block;
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.preview-info {
+  margin-top: 12px;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+}
+
+.size-info-row {
+  display: flex;
+  justify-content: space-between;
+  color: #aaa;
+}
+
+.size-label {
+  color: #888;
+}
+
+.size-value {
+  color: #00ff00;
+}
+
+.save-right {
+  overflow: auto;
+  padding-right: 4px;
+  min-width: 0;
+}
+
+.export-options h4 {
+  margin: 0 0 8px;
+  color: #00ff00;
+  font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
+}
+
+.export-size-selector label,
+.export-format-selector label,
+.export-cropped-only label,
+.filename-label {
+  color: #aaa;
+}
+
+.export-size-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.export-select,
+.filename-input {
+  width: 100%;
+  background: #0f0f0f;
+  border: 1px solid #333;
+  color: #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  margin-top: 6px;
+}
+
+.save-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #222;
+}
+
+.primary-button {
+  background: #003300;
+  border: 1px solid #00ff00;
+  color: #00ff00;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  background: #002200;
+  border-color: #33ff33;
+  color: #33ff33;
+}
+
+.secondary-button {
+  background: transparent;
+  border: 1px solid #444;
+  color: #bbb;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: #666;
+  color: #ddd;
+}
+
+.primary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+

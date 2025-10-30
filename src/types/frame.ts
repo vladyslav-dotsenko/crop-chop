@@ -44,6 +44,13 @@ export interface FrameLayer {
   }
 }
 
+export interface CropArea {
+  width: number
+  height: number
+  x?: number
+  y?: number
+}
+
 export interface Frame {
   id: string
   title: string
@@ -52,6 +59,7 @@ export interface Frame {
   description: string
   type?: 'simple' | 'fancy'
   isCustom?: boolean
+  cropArea?: CropArea
   parameters?: FrameParameter[]
   layers?: FrameLayer[]
   exportSizes?: {

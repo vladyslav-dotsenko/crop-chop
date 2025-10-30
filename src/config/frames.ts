@@ -9,6 +9,7 @@ const frameConfig: FrameConfig = {
       height: 720,
       description: 'Large square card',
       type: 'simple',
+      cropArea: { width: 720, height: 720 },
       exportSizes: [
         { name: 'original', width: 720, height: 720, scale: 1 },
         { name: 'large', width: 1440, height: 1440, scale: 2 },
@@ -22,6 +23,7 @@ const frameConfig: FrameConfig = {
       height: 400,
       description: 'Medium square card',
       type: 'simple',
+      cropArea: { width: 400, height: 400 },
       exportSizes: [
         { name: 'original', width: 400, height: 400, scale: 1 },
         { name: 'large', width: 800, height: 800, scale: 2 },
@@ -35,6 +37,7 @@ const frameConfig: FrameConfig = {
       height: 500,
       description: 'Twitter profile header',
       type: 'simple',
+      cropArea: { width: 1500, height: 500 },
       exportSizes: [
         { name: 'original', width: 1500, height: 500, scale: 1 },
         { name: 'large', width: 3000, height: 1000, scale: 2 },
@@ -48,6 +51,7 @@ const frameConfig: FrameConfig = {
       height: 720,
       description: 'YouTube video thumbnail',
       type: 'simple',
+      cropArea: { width: 1280, height: 720 },
       exportSizes: [
         { name: 'original', width: 1280, height: 720, scale: 1 },
         { name: 'large', width: 2560, height: 1440, scale: 2 },
@@ -61,6 +65,7 @@ const frameConfig: FrameConfig = {
       height: 1080,
       description: 'A person card with configurable frame from ravn.co',
       type: 'fancy',
+      cropArea: { width: 536, height: 920, x: 80, y: 80 },
       parameters: [
         {
           id: 'cardTitle',
