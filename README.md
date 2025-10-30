@@ -29,9 +29,18 @@ This application was primarily developed using AI assistance through Cursor, dem
 - **Zoom & Pan**: Smooth zooming (mouse wheel) and panning (drag) with intelligent boundary constraints
 - **Live Preview**: Real-time preview of the cropped result as you adjust the crop area
 - **Custom Filename**: Editable filename with automatic size suffix (e.g., `image_300x200.png`)
-- **Frame Templates**: Pre-built frame configurations (MTG cards, social media formats, etc.)
+- **Frame Templates**: Pre-built frame configurations (social media formats, card designs, etc.)
 - **Custom Frames**: Create and configure custom frame templates with parameters
 - **Export Options**: Export full frames or cropped images only
+
+### Advanced Frame Features
+- **Multi-Layer Frame Composer**: Build complex frames with background, border, image, text, and shape layers
+- **Configurable Parameters**: Text, number, color, select, and boolean parameters for dynamic frame customization
+- **Layer Alignment System**: Flexible positioning with alignment-based and absolute coordinate systems
+- **Parameter Substitution**: Use `{{parameterId}}` syntax to dynamically inject parameter values into layer properties
+- **Export Size Options**: Multiple preset sizes (original, large, thumbnail) with automatic scaling
+- **Simple & Fancy Frames**: Two frame types - simple cropped areas or complex multi-layer compositions
+- **Custom Frame Builder**: Advanced JSON-based frame editor for creating sophisticated frame configurations
 
 ### Technical Features
 - **Redux State Management**: Centralized state using Redux Toolkit with slice pattern
