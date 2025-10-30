@@ -77,3 +77,8 @@ Open [http://localhost:5173](http://localhost:5173) to view the application.
 ## Documentation
 
 - **[Frame Configuration Guide](./docs/frame-configuration.md)** - Learn how to create custom frame templates with parameters, layers, and export options
+
+## Attribution
+
+- [RAVN Community](https://www.figma.com/community/file/1174404634238480868) - Design assets licensed under [Creative Commons CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
