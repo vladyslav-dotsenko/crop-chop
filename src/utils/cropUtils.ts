@@ -1,4 +1,4 @@
-import type { Frame, CropArea } from '../types'
+import type { Frame } from '../types'
 
 export interface CropDimensions {
   width: number

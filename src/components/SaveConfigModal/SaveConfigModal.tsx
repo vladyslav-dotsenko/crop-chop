@@ -30,7 +30,6 @@ const SaveConfigModal: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const previewContainerRef = useRef<HTMLDivElement>(null)
   const [loadedImages, setLoadedImages] = useState<Record<string, HTMLImageElement>>({})
-  const [displaySize, setDisplaySize] = useState<{ width: number; height: number }>({ width: frameWidth, height: frameHeight })
   const [previewDataUrl, setPreviewDataUrl] = useState<string>('')
 
   const cropDimensions = useMemo(() => getCropAreaDimensions(selectedFrame, frameWidth, frameHeight), [selectedFrame, frameWidth, frameHeight])
@@ -44,32 +43,6 @@ const SaveConfigModal: React.FC = () => {
     }
     init()
   }, [isOpen])
-
-  // Compute responsive display size for canvas based on container and viewport
-  useEffect(() => {
-    if (!isOpen) return
-    const updateSize = () => {
-      const containerWidth = previewContainerRef.current?.clientWidth || frameWidth
-      const maxWidth = Math.max(100, containerWidth - 24)
-      const maxHeight = Math.min(window.innerHeight * 0.5, 500)
-      const aspect = frameWidth / frameHeight
-      let w = maxWidth
-      let h = w / aspect
-      if (h > maxHeight) {
-        h = maxHeight
-        w = h * aspect
-      }
-      setDisplaySize({ width: w, height: h })
-    }
-    updateSize()
-    const ro = new ResizeObserver(updateSize)
-    if (previewContainerRef.current) ro.observe(previewContainerRef.current)
-    window.addEventListener('resize', updateSize)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener('resize', updateSize)
-    }
-  }, [isOpen, frameWidth, frameHeight])
 
   useEffect(() => {
     if (!selectedFrame || !selectedFrame.layers) return
