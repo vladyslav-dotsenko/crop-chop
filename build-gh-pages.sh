@@ -6,5 +6,5 @@ npm install &&
 VITE_BASE_URL='/crop-chop/' npm run build &&
 git add ./dist -f &&
 git commit -a -m 'release. gh-pages build' &&
-git push origin `git subtree split --prefix dist gh-pages` --force &&
+git push origin `git subtree split --prefix dist gh-pages`:gh-pages --force &&
 git checkout -
