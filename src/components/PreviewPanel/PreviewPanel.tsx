@@ -31,7 +31,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ frameWidth, frameHeight }) 
   const originalImage = selectedImage?.originalImage || null
   const imagePosition = selectedImage?.imagePosition || { x: 0, y: 0 }
   const imageScale = selectedImage?.imageScale || 1
-  const filename = selectedImage?.filename || 'cropped-image'
+  const filename = selectedImage?.filename ?? 'cropped-image'
 
   // Get crop area dimensions using the new configuration approach
   const cropDimensions = getCropAreaDimensions(selectedFrame, frameWidth, frameHeight)
@@ -493,6 +493,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ frameWidth, frameHeight }) 
 
   const handleSave = useCallback(() => {
     if (!canvasRef.current || !selectedFrame || !originalImage) return
+    if (!filename || filename.trim() === '') return
 
     const canvas = canvasRef.current
     
@@ -725,7 +726,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({ frameWidth, frameHeight }) 
       <button 
         className="save-button"
         onClick={handleSave}
-        disabled={!originalImage}
+        disabled={!originalImage || !filename || filename.trim() === ''}
       >
         Save as {exportFormat.toUpperCase()}
       </button>

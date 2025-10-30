@@ -1,11 +1,18 @@
-import { Provider, useSelector } from 'react-redux'
+import { Provider, useDispatch, useSelector } from 'react-redux'
 import { store } from './store'
 import type { RootState } from './store'
-import { FrameSelector, Navigation, PreviewPanel, ImageSidebar, TabbedInterface } from './components'
+import { FrameSelector, PreviewPanel, ImageSidebar, TabbedInterface } from './components'
+import { openFrameSelector, resetAllImages } from './store/slices'
 import './App.css'
 
 function AppContent() {
   const { isFrameSelectorOpen, selectedFrame } = useSelector((state: RootState) => state.frameSelector)
+  const dispatch = useDispatch()
+
+  const handleGoHome = () => {
+    dispatch(resetAllImages())
+    dispatch(openFrameSelector())
+  }
 
   // Show frame selector if explicitly open or no frame is selected yet
   const showFrameSelector = isFrameSelectorOpen || !selectedFrame
@@ -14,7 +21,7 @@ function AppContent() {
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <div className="header-text">
+          <div className="header-text" onClick={handleGoHome} role="button" title="Go to home" style={{ cursor: 'pointer' }}>
             <h1>CropChop</h1>
             <p>Image cropping tool</p>
           </div>
@@ -38,7 +45,6 @@ function AppContent() {
         </div>
       ) : (
         <>
-          <Navigation />
           <div className="app-content">
             <div className="left-sidebar">
               <ImageSidebar />

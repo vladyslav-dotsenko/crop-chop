@@ -22,7 +22,7 @@ const SaveConfigModal: React.FC = () => {
   const originalImage = selectedImage?.originalImage || null
   const imagePosition = selectedImage?.imagePosition || { x: 0, y: 0 }
   const imageScale = selectedImage?.imageScale || 1
-  const filename = selectedImage?.filename || 'cropped-image'
+  const filename = selectedImage?.filename ?? 'cropped-image'
 
   const frameWidth = selectedFrame?.width || 300
   const frameHeight = selectedFrame?.height || 200
@@ -317,6 +317,7 @@ const SaveConfigModal: React.FC = () => {
 
   const handleSave = useCallback(() => {
     if (!canvasRef.current || !selectedFrame || !originalImage) return
+    if (!filename || filename.trim() === '') return
     const canvas = canvasRef.current
     const sizes = selectedExportSizes
     sizes.forEach(sizeName => {
@@ -482,7 +483,7 @@ const SaveConfigModal: React.FC = () => {
         </div>
         <div className="save-modal-footer">
           <button className="secondary-button" onClick={handleClose}>Cancel</button>
-          <button className="primary-button" onClick={handleSave} disabled={!originalImage}>Save as {exportFormat.toUpperCase()}</button>
+          <button className="primary-button" onClick={handleSave} disabled={!originalImage || !filename || filename.trim() === ''}>Save as {exportFormat.toUpperCase()}</button>
         </div>
       </div>
     </div>

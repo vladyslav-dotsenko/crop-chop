@@ -201,7 +201,7 @@ const frameConfig: FrameConfig = {
             y: 46,
             width: 624 + 16,
             height: 88 + 16,
-            imageUrl: '/assets/ravn-community/card-title.png',
+            imageUrl: './assets/ravn-community/card-title.png',
           }
         },
         {
@@ -255,7 +255,7 @@ const frameConfig: FrameConfig = {
             marginY: 585,
             width: 624 + 24,
             height: 314 + 24,
-            imageUrl: '/assets/ravn-community/card-content.png',
+            imageUrl: './assets/ravn-community/card-content.png',
           }
         },
         {

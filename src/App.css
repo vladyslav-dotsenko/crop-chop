@@ -31,6 +31,7 @@
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 2px;
+  transition: text-shadow 0.2s ease, transform 0.1s ease
 }
 
 .header-text p {
@@ -38,6 +39,15 @@
   color: #666;
   font-size: 0.8rem;
   text-transform: lowercase;
+  transition: color 0.2s ease
+}
+
+.header-text:hover h1 {
+  text-shadow: 0 0 6px rgba(0, 255, 0, 0.6)
+}
+
+.header-text:hover p {
+  color: #00ff00
 }
 
 .github-link {

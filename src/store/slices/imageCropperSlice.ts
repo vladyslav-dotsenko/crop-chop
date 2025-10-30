@@ -12,7 +12,7 @@ const extractFilename = (url: string): string => {
     // Handle regular URLs
     const urlObj = new URL(url)
     const pathname = urlObj.pathname
-    const filename = pathname.split('/').pop() || 'cropped-image'
+    const filename = pathname.split('/').pop() ?? 'cropped-image'
     
     // Remove file extension for the base filename
     return filename.replace(/\.[^/.]+$/, '')
